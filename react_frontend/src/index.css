@@ -1,0 +1,109 @@
+@import url("https://use.typekit.net/spp1bqp.css");
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: franklin-gothic-urw, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: uppercase;
+  color: white;
+  font-size: 10px;
+}
+
+.bottomText {
+  vertical-align: bottom;
+}
+
+.container {
+  width: 800px;
+  margin: auto;
+  height: 480px;
+  border: 1px solid steelblue;
+  padding: 8.5px;
+}
+
+.colorBox {
+  padding: 17px;
+  border-radius: 5px;
+  margin: 8.5px;
+  display: inline-block;
+}
+
+.graphContainer {
+  width: 503px;
+  height: 293px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  margin-left: 8.5px;
+  margin-right: 8.5px;
+  display: inline-block;
+  padding: 0;
+  vertical-align: top;
+}
+
+.defaultButton {
+  background-color: #42b0ed; /* Green */
+  border: none;
+  color: white;
+  width: 243px;
+  height: 65px;
+  margin-bottom: 10px;
+  text-align: center;
+  display: inline-block;
+  border-radius: 5px;
+
+  font-family: franklin-gothic-urw, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: uppercase;
+  color: white;
+  font-size: 10px;
+}
+
+h6 {
+  font-family: franklin-gothic-urw, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: uppercase;
+  color: white;
+  font-size: 25px;
+}
+
+.buttonContainer {
+  width: 243px;
+  height: 140px;
+  display: inline-block;
+  margin-right: 17px;
+}
+
+.lowerContainer {
+  width: 503px;
+  height: 140px;
+  display: inline-block;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 400px;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 10px;
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 17px;
+  color: white;
+}
+
+footer {
+  margin-top: 30px;
+  text-align: center;
+}
