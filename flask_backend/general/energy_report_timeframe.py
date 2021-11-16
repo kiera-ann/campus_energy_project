@@ -44,15 +44,4 @@ def get_er_timeframe_dict() :
                 'this_month_fmt' : "MM.YYYY"
             }
     }
-
-    # Debugging print statements
-    # print(new_today)
-    # print(new_start)
-    # print(new_end)
-    # print(this_month)
-    # print(this_week)
-
     return (data_dict)
-
-# Debugging function
-# print(get_er_timeframe_dict())  # Debugging print statement

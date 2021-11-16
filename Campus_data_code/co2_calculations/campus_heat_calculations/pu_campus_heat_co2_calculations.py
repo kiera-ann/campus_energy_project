@@ -35,37 +35,22 @@ def influxdb_query_builder_heat_co2_lbs(meaurement_name) :
     query_p3 = data_field_label_str
     query_p4 = '"'
     query_p5 = " WHERE time > now() - 12h ORDER BY time DESC LIMIT 1"
-
-    # Concatenate string
-    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)
-
-    # print(full_query_string)    # Debugging print statement
+    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)  # Concatenate string
     return full_query_string
 
-
-# Debugging function
-# print(influxdb_query_builder_heat_co2_lbs()) # Debugging print statement
 
 # Function to generate a list of queries for total co2 data related to energy use
 def generate_list_of_queries() :
     list_of_queries = []  # Initialize list
     for name in measurement_names_for_heat_co2 :
-        # print(influxdb_query_builder_heat_co2_lbs(name))   # Debugging print statement
         list_of_queries.append(influxdb_query_builder_heat_co2_lbs(name))
-        # print(list_of_queries)    # Debugging print statement
-
     return list_of_queries
 
-
-# Debugging function
-# print(generate_list_of_queries())   # Debugging print statement
 
 # Function to query database and return a list of dictionaries with query data
 def query_database() :
     # Function to generate a list of queries to be made to the database and store list in variable "list_of_queries"
     list_of_queries = generate_list_of_queries()
-    # print(list_of_queries)    # Debugging print statement
-
     list_of_dict = []  # Initialize list
     count = 1  # Used to make unique dictionary variable names
 
@@ -76,41 +61,23 @@ def query_database() :
         previous_points = previous_entries.get_points()  # Convert to points
 
         for previous_point in previous_points :  # Iterate through points
-
             previous_timepoint_pd = pd.to_datetime(previous_point['time'])  # Convert Timestamp to pandas timestamp object
-            # print(previous_timepoint_pd)  # Debugging print statement
-
             previous_value = previous_point['value']  # retrieves value
             previous_value_float = float(previous_value)  # convert to type float
-            # print(previous_value_float)  # Debugging print statement
-
-            # Create unique dictionary names
-            dictionary_name = "dict_of_data_" + str(count)
-            # print(dictionary_name)  # Debugging print statement
-
+            dictionary_name = "dict_of_data_" + str(count)  # Create unique dictionary names
             dictionary_name = { }  # Initialize varibale as a dictionary
             dictionary_name[previous_timepoint_pd] = previous_value_float  # Place timepoint: value in dictionary
-
             count = count + 1  # Increment counter to create a new dictionary variable name on iterating for loop
-            # print(dictionary_name)   # Debugging print statement
-
             list_of_dict.append(dictionary_name)  # Append to list of dictionaries
-    # print(list_of_dict)  # Debugging print statement
-
     return list_of_dict
 
-
-# Debugging function
-# print(query_database())   # Debugging print statement
 
 # Function to calculate most recent tally of Heat CO2 Princeton's Campus is responsible for and write data to InfluxDB
 def write_recent_total_campus_heat_co2_to_InfluxDB() :
     list_of_dict = []  # Initialize list
     list_of_dict = query_database()  # returns a list of dictionaries with query data
-
     list_of_times = []  # Initialize list of timestamps
     list_of_values = []  # Initialize list of values
-
     for dictionary in list_of_dict :
 
         # Iterate through dictionary of timestamp and values and append time and value in list_of_time and list_of_values
@@ -118,20 +85,15 @@ def write_recent_total_campus_heat_co2_to_InfluxDB() :
             list_of_times.append(key)
             list_of_values.append(float(value))
 
-    # print(list_of_times)  # Debugging print statement
-    # print(list_of_values)  # Debugging print statement
-
     # Finds sum using sum() function in Python
     # Source: https://www.geeksforgeeks.org/sum-function-python/
     sum_campus_heat_co2 = sum(list_of_values)
     sum_campus_heat_co2 = round(float(sum_campus_heat_co2) , 3)
-    # print(tally_campus_energy_co2)   # Debugging print statement
 
     # Date times are comparable; so you can use max(datetimes_list) and min(datetimes_list)
     # Source: https://stackoverflow.com/questions/3922644/find-oldest-youngest-datetime-object-in-a-list
     # I will use the latest timestamp as the overall timestamp to apply to the data to be input into InfluxDB
     latest_timestamp = max(list_of_times)
-    # print(latest_timestamp)   # Debugging print statement
 
     # Puts data in json body for writing to InfluxDB
     json_body = [
@@ -150,12 +112,7 @@ def write_recent_total_campus_heat_co2_to_InfluxDB() :
 
     # Write data to InfluxDB
     influxdb_client.write_points(json_body)
-    # print("PU CO2 Data: Heat")  # Debugging print statement
-    # print(json_body) # Debugging print statement
 
-
-# Debugging function
-# print(write_recent_total_campus_heat_co2_to_InfluxDB())  # Debugging print statement
 
 # Initialize databases
 _init_influxdb_database()

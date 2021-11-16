@@ -25,20 +25,11 @@ def list_of_campus_buildings() :
 
     # Read CSV file and convert to pandas object
     df = pd.read_csv(pu_heatmap_csv_filename , sep=',')
-    # print(df)     # Debugging print statement
 
     # Convert Pandas column to list
     # Source: https://datatofish.com/convert-pandas-dataframe-to-list/
     building_PU_R25_NAME = df['PU_R25_NAME'].tolist()
-
-    # print(building_PU_R25_NAME)     # Debugging print statement
-    # print(len(building_PU_R25_NAME))        # Debugging print statement
-
     return building_PU_R25_NAME
-
-
-# Debugging function
-# print(list_of_campus_buildings())  # Debugging print statement
 
 
 # Build query for database
@@ -50,27 +41,15 @@ def influxdb_query_builder(PU_R25_NAME) :
     query_p3 = data_field_label_str
     query_p4 = '"'
     query_p5 = " WHERE time > now() - 40d ORDER BY time"
-
-    # Concatenate string
-    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)
-
-    # print(full_query_string)    # Debugging print statement
+    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)  # Concatenate string
     return full_query_string
-
-
-# Debugging function
-# print(influxdb_query_builder('Nassau Hall'))  # Debugging print statement
 
 
 # Function to query InfluxDB building data energy CO2 data
 def query_influxdb_energy_co2_data(PU_R25_NAME) :
     building_energy_co2_query = influxdb_query_builder(PU_R25_NAME)
-    # print(building_energy_co2_query)    # Debugging print statement
-
     query_str = str(building_energy_co2_query)  # convert query to type string
-
     buidling_energy_co2_df = pd.DataFrame(influxdb_client.query(query_str).get_points())
-    # print(buidling_energy_co2_df)  # Debugging print statement
 
     # convert the 'time' column to datetime format
     # Source: https://www.geeksforgeeks.org/convert-the-column-type-from-string-to-datetime-format-in-pandas-dataframe/
@@ -93,7 +72,6 @@ def query_influxdb_energy_co2_data(PU_R25_NAME) :
     # Offset of '+5H' to adjust for difference in timezone since time is recorded in UTC but we need to convert to US/Eastern
     # df_day = building_energy_co2_df.resample("D", offset = '+5H').sum()
 
-    # print(df_day)       # Debugging print statement ***** remove to debug *****
     building_energy_co2_last_day = df_day.index.tolist()[-1]
     print("building_energy_co2_last_day")  # Debugging print statement
     print(building_energy_co2_last_day)  # Debugging print statement
@@ -103,7 +81,6 @@ def query_influxdb_energy_co2_data(PU_R25_NAME) :
     print()
 
     df_week = buidling_energy_co2_df.resample("W").sum()
-    # print(df_week)       # Debugging print statement
     building_energy_co2_last_week = df_week.index.tolist()[-1]
     print("building_energy_co2_last_week")  # Debugging print statement
     print(building_energy_co2_last_week)  # Debugging print statement
@@ -113,15 +90,9 @@ def query_influxdb_energy_co2_data(PU_R25_NAME) :
     print()
 
     df_month = buidling_energy_co2_df.resample("M").sum()
-    # print(df_month)       # Debugging print statement
     building_energy_co2_last_month = df_month.index.tolist()[-1]
     print("building_energy_co2_last_month")  # Debugging print statement
     print(building_energy_co2_last_month)  # Debugging print statement
     building_energy_co2_last_month_value = round(float(df_month['value'].tolist()[-1]) , 3)
     print("building_energy_co2_last_month_value")  # Debugging print statement
     print(building_energy_co2_last_month_value)  # Debugging print statement
-
-
-# Debugging function
-# print(query_influxdb_energy_co2_data('Nassau Hall'))  # Debugging print statement
-print(query_influxdb_energy_co2_data('Frick Chemistry Laboratory'))  # Debugging print statement

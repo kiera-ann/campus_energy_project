@@ -1,8 +1,6 @@
-# encoding=utf8
 import sys
 import time
 from datetime import datetime
-# from Campus_data_code.pu_icetec_data_function import get_icetec_pu_data_function  # Uses icetec time which is not UTC
 
 # Uses properly converted UTC time
 from Campus_data_code.icetec_code.pu_icetec_data_function_utc import get_icetec_pu_data_function
@@ -29,7 +27,8 @@ from Campus_data_code.campus_energy_calculations.campus_energy_percent import ca
 from Campus_data_code.co2_calculations.cogen_duct_burner_co2_calculations import write_pu_cogen_duct_burner_co2_to_InfluxDB
 
 # Calculates Energy from Cogen MicroTurbines
-from Campus_data_code.cogen_generated_energy.cogen_microturbine.pu_cogen_microturbine_energy_calculations import write_cogen_microturbine_energy_to_InfluxDB
+from Campus_data_code.cogen_generated_energy.cogen_microturbine.pu_cogen_microturbine_energy_calculations import \
+    write_cogen_microturbine_energy_to_InfluxDB
 
 # Calculates CO2 from Cogen Auxiliary Boiler # 1
 from Campus_data_code.co2_calculations.pu_cogen_aux_bioler_1_co2_calculations import write_pu_cogen_aux_bioler_1_co2_to_InfluxDB
@@ -53,7 +52,8 @@ from Campus_data_code.co2_calculations.pu_campus_energy_co2_calculations import 
 from Campus_data_code.co2_calculations.campus_heat_calculations.pu_campus_heat_co2_calculations import write_recent_total_campus_heat_co2_to_InfluxDB
 
 # Calculates the most recent energy emission data to InfluxDB
-from Campus_data_code.co2_calculations.campus_heat_calculations.pu_campus_energy_emission_rate_calculations import write_recent_energy_emission_rate_to_InfluxDB
+from Campus_data_code.co2_calculations.campus_heat_calculations.pu_campus_energy_emission_rate_calculations import \
+    write_recent_energy_emission_rate_to_InfluxDB
 
 # Import InfluxDB Module
 from influxdb import InfluxDBClient
@@ -62,8 +62,6 @@ INFLUXDB_ADDRESS = '140.180.133.81'  # Personal development Mac mini IP address
 INFLUXDB_USER = 'admin'
 INFLUXDB_PASSWORD = 'admin'
 INFLUXDB_DATABASE = 'pu_icetec_database_raw'
-
-# http://localhost:8086
 
 influxdb_client = InfluxDBClient(INFLUXDB_ADDRESS , 8086 , INFLUXDB_USER , INFLUXDB_PASSWORD , None)
 
@@ -87,22 +85,17 @@ def icetec_parse_function_api() :
             delta_co2 = False  # Tag to determine if tally of CO2 has to be updated; initially set to False
             delta_heat_co2 = False  # Tag to determine if tally of CO2 for heat has to be updated; initially set to False
             delta_energy_co2 = False  # Tag to determine if tally of CO2 for energy has to be updated; initially set to False
-            # delta_heat = False  # Unsure of use yet
-
             list_of_data = get_icetec_pu_data_function()
-            # print(list_of_data)   # For simple debugging or logging
 
             # Send to function to calculate fraction/percent of energy from different sources
             campus_energy_source_division(list_of_data)
-
-            print("Icetec Data Parsed")     # Debugging print statement
+            print("Icetec Data Parsed")  # Debugging print statement
 
             # Loop through elements in list_of_data received from Icetec API call
             for i in range(0 , len(list_of_data)) :
                 if (list_of_data[i]["data_field_label"] == "EP.Totals.Power.i.Solar_kW") \
                         or (list_of_data[i]["data_field_label"] == "EP.Power.Solar.WindsorPV.pm8600.kW") \
-                        or (list_of_data[i]["data_field_label"] == "EP.Power.Solar.FrickPV.Main.Total_kW"):
-                # if list_of_data[i]["data_field_label"] == "EP.Power.Solar.WindsorPV.Ion7550.i.Total_kW" :  # Old API
+                        or (list_of_data[i]["data_field_label"] == "EP.Power.Solar.FrickPV.Main.Total_kW") :
                     is_renewable_var = True
                 else :
                     is_renewable_var = False
@@ -116,14 +109,13 @@ def icetec_parse_function_api() :
                             'is_renewable' : is_renewable_var ,
                         } ,
                         "time" : list_of_data[i]["timestamp"] ,
-                        # "time" : "2020-09-30T17:00:00Z" ,
                         'fields' : {
                             'value' : list_of_data[i]["value"] ,
                         }
                     }
                 ]
 
-                try:
+                try :
                     # Done to extract item from the list
                     data_set = json_body[0]
                     data_set.items()
@@ -136,15 +128,11 @@ def icetec_parse_function_api() :
                     query_p4 = '"'
                     query_p5 = " WHERE time > now() - 1m ORDER BY time DESC LIMIT 1"
                     full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)
-                    # print(full_query_string)    # Debugging print statement
-
                     previous_db_entry = influxdb_client.query(full_query_string)  # Query last DB entry with same type of measurement name
                     previous_points = previous_db_entry.get_points()  # Convert to points
 
                     for previous_point in previous_points :  # Iterate through points
                         previous_timepoint = previous_point['time']  # sets the variable "previous_timepoint" to whatever the last timepoint value is
-                        # print(previous_timepoint)    # Debugging print statement
-                        # print(type(previous_point))  # Seems to be dictionary type
                         previous_point_str = str(previous_timepoint)  # Convert timepoint value to type string
 
                     # Pass if previous_point_str == latest_timepoint_str evaluates to True
@@ -166,7 +154,6 @@ def icetec_parse_function_api() :
                     # In the event code has been down for some time, there will be a large gap time data or missing data completely
                     # So there is a need to write data to influxDB
                     influxdb_client.write_points(json_body)
-                    # print("Data not written in a while so will only write to InfluxDB alone.")      # Debugging print statement
                     print(json_body)  # Debugging print statement
 
             # Functions to calculate CO2 and Energy Data and input into InfluxDB
@@ -181,7 +168,6 @@ def icetec_parse_function_api() :
             if "EP.Cogen.Turbine.Power.ION.Total_kW" in list_of_newly_written_data :
                 write_cogen_turbine_energy_to_InfluxDB()
                 delta_energy = True  # There was a change to energy so a new tally of campus energy needs to be calculated
-
 
             # Calculates Energy from PSEG Grid and writes that data to InfluxDB
             if "EP.Totals.Power.i.Import_kW" in list_of_newly_written_data :
@@ -229,34 +215,27 @@ def icetec_parse_function_api() :
 
             # Determine if either delta_energy or delta_co2 is True and if so, perform some new tallies so building level data is compared to new data
             if delta_energy == True :
-                # print("delta_energy == True")       # Debugging print statement
                 write_recent_total_campus_energy_to_InfluxDB()
 
             # Calculates new Total Campus CO2 if value of delta_co2 is True
             if delta_co2 == True :
-                # print("delta_co2 = True")       # Debugging print statement
                 write_recent_total_campus_co2_to_InfluxDB()
 
             # Calculates new Total Energy CO2 if value of delta_co2 is True
             # Also calculates new energy use emissions (pounds CO2/KWH)
             if delta_energy_co2 == True :
-                # print("delta_energy_co2 == True")       # Debugging print statement
                 write_recent_total_campus_energy_co2_to_InfluxDB()
-                # Calculates new energy use emissions (pounds CO2/KWH)
                 write_recent_energy_emission_rate_to_InfluxDB()
 
             # Calculates new Total Heat CO2 if value of delta_co2 is True
             if delta_heat_co2 == True :
-                # print("delta_heat_co2 == True")     # Debugging print statement
                 write_recent_total_campus_heat_co2_to_InfluxDB()
 
             time.sleep(20)
-            # print()
 
         # Handles KeyboardInterrupt exception
         except KeyboardInterrupt :
-            # quit
-            sys.exit()
+            sys.exit()  # quit
 
         # Handles other issues with getting data from Icetec API
         except :
@@ -279,5 +258,3 @@ def main() :
 if __name__ == '__main__' :
     print('Icetec Data to InfluxDB')
     main()
-
-# print(icetec_parse_function_api())

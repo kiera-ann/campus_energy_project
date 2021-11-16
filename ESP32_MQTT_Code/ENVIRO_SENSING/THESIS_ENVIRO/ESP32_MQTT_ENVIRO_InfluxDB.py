@@ -39,10 +39,6 @@ def on_connect(client , userdata , flags , rc) :
     client.subscribe(MQTT_ESP32_SENSORS_TOPIC)
 
 
-# def on_disconnect(client , userdata , rc) :
-#     print("client disconnected ok \n")
-
-
 # Function to send payload to InfluxDB
 def message_payload_to_JSON(msg) :
     try :
@@ -378,7 +374,6 @@ def message_payload_to_JSON(msg) :
             print(TEMPERATURE_json_body)
             print(RELATIVE_HUMIDITY_json_body)
 
-
         print()
     except :
         pass
@@ -387,21 +382,8 @@ def message_payload_to_JSON(msg) :
 def on_message(client , userdata , msg) :
     """The callback for when a PUBLISH message is received from the server."""
     try :
-        # print(msg.topic + ' ' + str(msg.payload))
-
-        # 'bXXX' means bytes. You need to convert this to UTF-8 before using it: msg.payload = msg.payload.decode("utf-8")
-        # msg.payload = msg.payload.decode("utf-8")
-        # message_payload_str = str(msg.payload)
-        #
-        # # using json.loads()
-        # # convert dictionary string to dictionary
-        # message_dict = json.loads(message_payload_str)
-        # print(message_dict)
-        # # print(len(message_dict))
-
         # Sends payload to Function 'message_payload_to_JSON()' to transfer payload to InfluxDB
         message_payload_to_JSON(msg)
-        # client.disconnect()
     except :
         pass
 
@@ -427,21 +409,16 @@ def main() :
             mqtt_client.on_connect = on_connect
             mqtt_client.on_message = on_message
             mqtt_client.connect(MQTT_ADDRESS , 1883)
-            # mqtt_client.on_disconnect = on_disconnect
             mqtt_client.loop_forever()
 
         # Handles KeyboardInterrupt exception
         except KeyboardInterrupt :
-            # quit
-            sys.exit()
+            sys.exit()  # quit
 
         # Handles other exceptions
         except :
-            # Delay for 10 seconds
-            time.sleep(10)
-
-            # Try again
-            continue
+            time.sleep(10)  # Delay for 10 seconds
+            continue  # Try again
 
 
 if __name__ == '__main__' :

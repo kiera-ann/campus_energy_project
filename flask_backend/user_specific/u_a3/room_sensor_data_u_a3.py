@@ -30,16 +30,9 @@ def influxdb_query_builder_dorm_enviro_t_value() :
     query_p3 = data_field_label_str
     query_p4 = '"'
     query_p5 = " WHERE time > now() - 12h ORDER BY time DESC LIMIT 1"
-
-    # Concatenate string
-    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)
-
-    # print(full_query_string)    # Debugging print statement
+    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)  # Concatenate string
     return full_query_string
 
-
-# Debugging function
-# print(influxdb_query_builder_dorm_enviro_t_value())  # Debugging print statement
 
 # Build query for database query of Dorm Room Enviro Sensor Data - Relative Humidity Data
 def influxdb_query_builder_dorm_enviro_rh_value() :
@@ -50,44 +43,30 @@ def influxdb_query_builder_dorm_enviro_rh_value() :
     query_p3 = data_field_label_str
     query_p4 = '"'
     query_p5 = " WHERE time > now() - 12h ORDER BY time DESC LIMIT 1"
-
-    # Concatenate string
-    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)
-
-    # print(full_query_string)    # Debugging print statement
+    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)  # Concatenate string
     return full_query_string
 
 
-# Debugging function
-# print(influxdb_query_builder_dorm_enviro_rh_value())  # Debugging print statement
-
 def query_influxdb_sensor_enviro_data() :
-    # Query string for Temperature Data
-    t_value_query = str(influxdb_query_builder_dorm_enviro_t_value())
-    # Query string for Relative Humidity Data
-    rh_value_query = str(influxdb_query_builder_dorm_enviro_rh_value())
-
+    t_value_query = str(influxdb_query_builder_dorm_enviro_t_value())  # Query string for Temperature Data
+    rh_value_query = str(influxdb_query_builder_dorm_enviro_rh_value())  # Query string for Relative Humidity Data
     enviro_dict = { }  # Initialize Dictionary
 
     # For Temperature Data
     previous_db_entry_t_value = influxdb_client.query(t_value_query)  # Query last DB entry with same type of measurement name
     previous_points_t_value = previous_db_entry_t_value.get_points()  # Convert to points
-    # print(previous_points_t_value)
 
     for previous_point_t_value in previous_points_t_value :  # Iterate through points
         previous_t_value = previous_point_t_value['t_value']  # retrieves value
         previous_t_value_float = float(previous_t_value)  # convert to type float
-        # print(previous_t_value_float)  # Debugging print statement
 
     # For Relative Humidity Data
     previous_db_entry_rh_value = influxdb_client.query(rh_value_query)  # Query last DB entry with same type of measurement name
     previous_points_rh_value = previous_db_entry_rh_value.get_points()  # Convert to points
-    # print(previous_points_rh_value)
 
     for previous_point_rh_value in previous_points_rh_value :  # Iterate through points
         previous_rh_value = previous_point_rh_value['rh_value']  # retrieves value
         previous_rh_value_float = float(previous_rh_value)  # convert to type float
-        # print(previous_rh_value_float)  # Debugging print statement
 
     enviro_dict = {
         "temperature" : previous_t_value_float ,
@@ -96,21 +75,15 @@ def query_influxdb_sensor_enviro_data() :
     return enviro_dict
 
 
-# Debugging function
-# print(query_influxdb_sensor_enviro_data())  # Debugging print statement
-
 # get_sensor_data_u_a1
 def get_sensor_data_u_a3() :
     data_dict = { }  # Initialize Dictionary
     building_name = 'Baker Hall'
     room_number = 'S204'
     full_room_location = 'Baker Hall - ROOM S204'
-
     enviro_dict = query_influxdb_sensor_enviro_data()
-    # print(enviro_dict)
     celsius_temperature_value = float(enviro_dict['temperature'])
     temperature_value = round((celsius_temperature_value * 1.8) + 32)  # Convert Celsius To Fahrenheit
-
     temperature_units = "Fahrenheit"
     temperature_units_symbol = " °F"
     humidity_value = round(float(enviro_dict['humidity_value']))
@@ -145,5 +118,3 @@ def get_sensor_data_u_a3() :
 
     return data_dict
 
-# # Debug Function
-# print(get_sensor_data_u_a3())

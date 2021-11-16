@@ -465,4 +465,3 @@ def flask_dorm_power_co2_sensing_u_a4() :
 if __name__ == '__main__' :
     # Serve with waitress; Increase number of threads
     serve(app , host='0.0.0.0' , port=4545 , threads=10)
-    # app.run(port=4545 , host='0.0.0.0')

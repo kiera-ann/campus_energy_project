@@ -1,9 +1,7 @@
 ''' Function to get sum of Dorm Room CO2 from InfluxDB. '''
 
-
 from influxdb import InfluxDBClient
 import pandas as pd
-
 
 # For Dorm Room Energy Sensor  Data
 # For Dorm Room (DR) Energy CO2
@@ -14,9 +12,10 @@ INFLUXDB_DATABASE = 'dormroom_energy_database_raw'
 
 influxdb_client = InfluxDBClient(INFLUXDB_ADDRESS , 8086 , INFLUXDB_USER , INFLUXDB_PASSWORD , None)
 
-list_of_sensor_names = ['ESP32_POWER_SENSOR: 7C:9E:BD:D7:4F:64',
-                        'ESP32_POWER_SENSOR: 7C:9E:BD:D7:4E:B0',
+list_of_sensor_names = ['ESP32_POWER_SENSOR: 7C:9E:BD:D7:4F:64' ,
+                        'ESP32_POWER_SENSOR: 7C:9E:BD:D7:4E:B0' ,
                         'ESP32_POWER_SENSOR: 7C:9E:BD:D7:4D:68']
+
 
 # Initialize database
 def _init_influxdb_database() :
@@ -35,16 +34,9 @@ def influxdb_query_builder_dorm_energy(sensor_name) :
     query_p3 = data_field_label_str
     query_p4 = '"'
     query_p5 = " WHERE time > now() - 15d ORDER BY time"
-
-    # Concatenate string
-    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)
-
-    # print(full_query_string)    # Debugging print statement
+    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)  # Concatenate string
     return full_query_string
 
-
-# Debugging function
-# print(influxdb_query_builder_dorm_energy('ESP32_POWER_SENSOR: AC:67:B2:05:39:88'))  # Debugging print statement
 
 # Function to query InfluxDB Dorm Room (DR) Energy data
 def query_influxdb_dorm_energy_data_u_a2() :
@@ -52,28 +44,20 @@ def query_influxdb_dorm_energy_data_u_a2() :
     total_kwh_today = 0.0
     total_kwh_yesterday = 0.0
     total_kwh_week = 0.0
-    # total_kwh_month = 0.0     # Removing for this project
-
     total_wh_today = 0.0
     total_wh_yesterday = 0.0
     total_wh_week = 0.0
-    # total_wh_month = 0.0      # Removing for this project
-
     return_data_dict = { }  # Initialize dictionary
 
     for name in list_of_sensor_names :
-        try:
+        try :
             query = influxdb_query_builder_dorm_energy(name)
             query_str = str(query)
-            # print(query_str)    # Debugging print statement
-
             dorm_energy_df = pd.DataFrame(influxdb_client.query(query_str).get_points())
-            # print(dorm_energy_df)    # Debugging print statement
 
             # convert the 'time' column to datetime format
             # Source: https://www.geeksforgeeks.org/convert-the-column-type-from-string-to-datetime-format-in-pandas-dataframe/
             dorm_energy_df['time'] = pd.to_datetime(dorm_energy_df['time'])
-            # print(dorm_co2_df)  # Debugging print statement
 
             # Set index of dataframe to column "time"
             dorm_energy_df.set_index('time' , inplace=True)
@@ -87,32 +71,21 @@ def query_influxdb_dorm_energy_data_u_a2() :
 
             # Calculations for the current day
             df_day = dorm_energy_df.resample("D").sum()
-            # print(df_day)       # Debugging print statement ***** remove to debug *****
             dorm_kwh_last_day = df_day.index.tolist()[-1]
             dorm_kwh_last_day_value = round(float(df_day['value'].tolist()[-1]) , 3)
             total_kwh_today = total_kwh_today + dorm_kwh_last_day_value
 
-            # Uncomment out tomorrow
             # Calculations for the previous day
             dorm_kwh_previous_day_value = round(float(df_day['value'].tolist()[-2]) , 3)
             total_kwh_yesterday = total_kwh_yesterday + dorm_kwh_previous_day_value
 
             # Calculations for the week
             df_week = dorm_energy_df.resample("W").sum()
-            # print(df_week)       # Debugging print statement
             dorm_kwh_last_week = df_week.index.tolist()[0]
             dorm_kwh_last_week_value = round(float(df_week['value'].tolist()[-1]) , 3)
             total_kwh_week = total_kwh_week + dorm_kwh_last_week_value
 
-            # # Removing for this project
-            # # Calculations for the month
-            # df_month = dorm_energy_df.resample("M").sum()
-            # # print(df_month)       # Debugging print statement
-            # dorm_kwh_last_month = df_month.index.tolist()[-1]
-            # dorm_kwh_last_month_value = round(float(df_month['value'].tolist()[-1]) , 3)
-            # total_kwh_month = total_kwh_month + dorm_kwh_last_month_value
-
-        except:
+        except :
             pass
 
         # Converts KiloWattHour to WattHour
@@ -121,37 +94,25 @@ def query_influxdb_dorm_energy_data_u_a2() :
         # Uncomment out tomorrow
         total_wh_yesterday = round((total_kwh_yesterday * 1000))
         total_wh_week = round((total_kwh_week * 1000))
-        # total_wh_month = round((total_kwh_month * 1000))          # Removing for this project
 
         # Round values to 1 significant figure for Kilowatthour values
         total_kwh_today = round(total_kwh_today , 1)
 
-        # Uncomment out tomorrow
         total_kwh_yesterday = round(total_kwh_yesterday , 1)
         total_kwh_week = round(total_kwh_week , 1)
-        # total_kwh_month = round(total_kwh_month , 1)          # Removing for this project
 
         # Data dictionary to return
         data_dict = {
             "energy_report_dorm_power" : {
                 'total_WH_today' : total_wh_today ,
                 'total_KWH_today' : total_kwh_today ,
-
-                # Uncomment out tomorrow
                 'total_WH_yesterday' : total_wh_yesterday ,
                 'total_KWH_yesterday' : total_kwh_yesterday ,
                 'total_WH_week' : total_wh_week ,
                 'total_KWH_week' : total_kwh_week ,
-
-                # 'total_WH_month' : total_wh_month ,           # Removing for this project
-                # 'total_KWH_month' : total_kwh_month ,         # Removing for this project
                 'unit_WH' : "Watt-Hour" ,
                 'unit_KWH' : 'Kilowatt-Hour'
             }
         }
 
-        # print(data_dict)    # Debugging print statement
         return data_dict
-
-# Debugging function
-# print(query_influxdb_dorm_energy_data_u_a2())          # Debugging print statement

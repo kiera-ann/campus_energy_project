@@ -16,12 +16,14 @@ MQTT_PASSWORD = 'admin'
 # Topics of interest
 MQTT_ESP32_POWER_SENSORS_REQUEST_TOPIC = 'dormhud/esp32/request_power'
 
+
 # Publish callback function
 def on_publish(client , userdata , result) :
     time_now = datetime.now().strftime('%Y-%m-%d %I:%M:%S %p')  # For simple debugging or logging
     print(time_now)  # For simple debugging or logging
     print("Data request was published with message")
     pass
+
 
 # Create client object and connect
 client = mqtt.Client()
@@ -30,6 +32,7 @@ client.connect(MQTT_ADDRESS , MQTT_PORT , 45)
 
 # Assign publish callback function
 client.on_publish = on_publish
+
 
 # Main Function to publish requests for power sensor data
 def mqtt_esp32_power_request() :
@@ -44,8 +47,7 @@ def mqtt_esp32_power_request() :
 
         # Handles KeyboardInterrupt exception
         except KeyboardInterrupt :
-            # quit
-            sys.exit()
+            sys.exit()  # quit
 
         # Handles other issues
         except :
@@ -56,6 +58,7 @@ def mqtt_esp32_power_request() :
             time.sleep(10)
             print()
             continue
+
 
 # Main Function
 def main() :

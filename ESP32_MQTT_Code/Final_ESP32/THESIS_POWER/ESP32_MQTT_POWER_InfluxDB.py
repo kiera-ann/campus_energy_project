@@ -46,10 +46,6 @@ def on_connect(client , userdata , flags , rc) :
     client.subscribe(MQTT_ESP32_POWER_SENSORS_TOPIC)
 
 
-# def on_disconnect(client , userdata , rc) :
-#     print("client disconnected ok \n")
-
-
 # Function to send payload to InfluxDB
 def message_payload_to_JSON(msg) :
     try :
@@ -61,7 +57,6 @@ def message_payload_to_JSON(msg) :
         # convert dictionary string to dictionary
         message_dict = json.loads(message_payload_str)
         SENSOR_TIMESTAMP = timestamp_data()
-
         DEVICE_MAC_ID = message_dict["DEVICE_MAC_ID"]
         DEVICE_NAME = message_dict["DEVICE_NAME"]
         SENSOR_ID = message_dict["SENSOR_ID"]
@@ -117,7 +112,6 @@ def dorm_room_energy_InfluxDB(json_body) :
     data_set = json_body[0]
     data_set.items()
     measurement_name = str(data_set["measurement"])
-    # print(measurement_name)
 
     # Function to execute energy and energy carbon calculations
     calc_energy_co2_dorm(measurement_name)
@@ -132,18 +126,14 @@ def calc_energy_co2_dorm(measurement_name) :
 
     # Only execute energy CO2 calculations if energy calculations were made
     if dorm_energy_write_result == "passed" :
-        # print("Passed DR Energy Calc to InfluxDB")  # Debugging print statement
-
         # Function to calculate energy CO2 calculations
         write_recent_dr_energy_co2_to_InfluxDB(measurement_name)
-        # print("Passed DR CO2 Calc to InfluxDB")  # Debugging print statement
 
 
 def on_message(client , userdata , msg) :
     """The callback for when a PUBLISH message is received from the server."""
     try :
         message_payload_to_JSON(msg)
-        # client.disconnect()
     except :
         pass
 
@@ -158,8 +148,7 @@ def _init_influxdb_database() :
 
 
 def main() :
-    # Initializes the InfluxDB database
-    _init_influxdb_database()
+    _init_influxdb_database()  # Initializes the InfluxDB database
 
     while True :
         try :
@@ -169,13 +158,11 @@ def main() :
             mqtt_client.on_connect = on_connect
             mqtt_client.on_message = on_message
             mqtt_client.connect(MQTT_ADDRESS , 1883)
-            # mqtt_client.on_disconnect = on_disconnect
             mqtt_client.loop_forever()
 
         # Handles KeyboardInterrupt exception
         except KeyboardInterrupt :
-            # quit
-            sys.exit()
+            sys.exit()  # quit
 
         # Handles other issues
         except :

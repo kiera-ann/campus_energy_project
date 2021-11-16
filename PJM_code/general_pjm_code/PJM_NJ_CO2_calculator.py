@@ -75,11 +75,3 @@ def PJM_NJ_CO2_per_MWh() :
                            "other" : Other_nonrenewable_CO2_per_MWh }
 
     return CO2_intensity_dict
-
-
-# print(Coal_CO2_per_MWh)
-# print(Natural_Gas_CO2_per_MWh)
-# print(Oil_CO2_per_MWh)
-# print(Other_nonrenewable_CO2_per_MWh)
-
-# print(PJM_NJ_CO2_per_MWh())

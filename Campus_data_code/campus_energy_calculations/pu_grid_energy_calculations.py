@@ -38,53 +38,31 @@ def influxdb_query_builder_power_import() :
     query_p3 = data_field_label_str
     query_p4 = '"'
     query_p5 = " WHERE time > now() - 12h ORDER BY time DESC LIMIT 2"
-
-    # Concatenate string
-    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)
-
-    # print(full_query_string)    # Debugging print statement
+    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)   # Concatenate string
     return full_query_string
-
-# Debugging function
-# print(influxdb_query_builder_power_import()) # Debugging print statement
 
 
 # Function to query last 2 values
 def query_last_2_values_power_import_InfluxDB() :
     # Generate Queries for Power Import data; only last 2 points will be used
     power_import_query = influxdb_query_builder_power_import()
-    # print(power_import_query)   # Debugging print statement
-
     query_str = str(power_import_query)  # convert query to type string
     previous_entries = influxdb_client.query(query_str)  # Query last DB entry with same type of measurement name
     previous_points = previous_entries.get_points()  # Convert to points
-
     dict_of_data = { }  # Initialize dictionary
 
     for previous_point in previous_points :  # Iterate through points
-
         previous_timepoint_pd = pd.to_datetime(previous_point['time'])  # Convert Timestamp to pandas timestamp object
-        # print(previous_timepoint_pd)  # Debugging print statement
-
         previous_value = previous_point['value']  # retrieves value
         previous_value_float = float(previous_value)  # convert to type float
-        # print(previous_value_float)  # Debugging print statement
-
         dict_of_data[previous_timepoint_pd] = previous_value_float  # Place timepoint: value in dictionary
-    # print(dict_of_data)  # Debugging print statement
     return dict_of_data
-
-# Debugging function
-# print(query_last_2_values_power_import_InfluxDB()) # Debugging print statement
 
 
 # Function to calculate kiloWatts per hour from Princeton Grid import and write to InfluxDB: EP.Totals.Power.i.Import_kW
 def write_campus_grid_energy_to_influxDB() :
     dict_of_data_dt_kW = { }  # Initialize dictionary
-
     dict_of_data_dt_kW = query_last_2_values_power_import_InfluxDB()  # Returns a dictionary of timestamp and kW values from EP.Totals.Power.i.Import_kW
-    # print(dict_of_data_dt_kW)  # Debugging print statement
-
     list_of_times = []  # Initialize list of timestamps
     list_of_values = []  # Initialize list of values
 
@@ -92,9 +70,6 @@ def write_campus_grid_energy_to_influxDB() :
     for key , value in dict_of_data_dt_kW.items() :
         list_of_times.append(key)
         list_of_values.append(value)
-
-    # print(list_of_times)   # Debugging print statement
-    # print(list_of_values)   # Debugging print statement
 
     # Gets the time values
     last_timepoint = list_of_times[0]
@@ -105,7 +80,6 @@ def write_campus_grid_energy_to_influxDB() :
 
     # Calculates time elapsed in unit hours
     time_difference_hr = (time_difference).seconds / 3600.0  # finding time difference in unit hour;  # Unit hour
-    # print(time_difference_hr)  # Unit hour   # Debugging print statement
 
     # Gets the values of kW from EP.Totals.Power.i.Import_kW
     last_value_kW = list_of_values[0]
@@ -119,7 +93,6 @@ def write_campus_grid_energy_to_influxDB() :
     # Energy is simply power times time. For instance, the most common unit of energy in the US is the kilowatt hour, or kWh.
     # One kWh is equal to using 1000 watts, or 1 kW continuously for one hour. As such, a kWh is born.
     kW_per_hour = average_power_draw_pjm_kW * time_difference_hr
-    # print(kW_per_hour)
 
     # Puts data in json body for writing to InfluxDB
     json_body = [
@@ -138,12 +111,7 @@ def write_campus_grid_energy_to_influxDB() :
 
     # Write data to InfluxDB
     influxdb_client_PU_Energy.write_points(json_body)
-    # print("PU Energy Data: PSEG Grid")  # Debugging print statement
-    # print(json_body)
 
-
-# Debugging function
-# print(write_campus_grid_energy_to_influxDB())  # Debugging print statement
 
 # Initialize databases
 _init_influxdb_database()

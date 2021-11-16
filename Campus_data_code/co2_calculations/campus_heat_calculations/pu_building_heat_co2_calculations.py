@@ -1,9 +1,6 @@
 '''Module to Calculate Heat CO2 for all Campus Buildings. Write data into InfluxDB. '''
 
-import time
 from influxdb import InfluxDBClient
-from datetime import datetime
-import sys
 import pandas as pd
 
 # For PU Campus Building database
@@ -50,47 +47,25 @@ def influxdb_query_builder_building_steam_pounds(PU_R25_NAME) :
     query_p3 = data_field_label_str
     query_p4 = '"'
     query_p5 = " WHERE time > now() - 12h ORDER BY time DESC LIMIT 1"
-
-    # Concatenate string
-    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)
-
-    # print(full_query_string)    # Debugging print statement
+    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)  # Concatenate string
     return full_query_string
-
-
-# # Debugging function
-# print(influxdb_query_builder_building_steam_pounds('Nassau Hall'))  # Debugging print statement
 
 
 # Function to query building energy database and return a dictionary with query data
 def query_database_building(PU_R25_NAME) :
     # Function to generate a list of queries to be made to the database and store list in variable "list_of_queries"
     building_steam_query = influxdb_query_builder_building_steam_pounds(PU_R25_NAME)
-    # print(building_steam_query)    # Debugging print statement
-
     query_str = str(building_steam_query)  # convert query to type string
     previous_entries = influxdb_client.query(query_str)  # Query last DB entry with same type of measurement name
     previous_points = previous_entries.get_points()  # Convert to points
-
     dict_of_data = { }  # Initialize dictionary
 
     for previous_point in previous_points :  # Iterate through points
-
         previous_timepoint_pd = pd.to_datetime(previous_point['time'])  # Convert Timestamp to pandas timestamp object
-        # print(previous_timepoint_pd)  # Debugging print statement
-
         previous_value = previous_point['value']  # retrieves value
         previous_value_float = float(previous_value)  # convert to type float
-        # print(previous_value_float)  # Debugging print statement
-
         dict_of_data[previous_timepoint_pd] = previous_value_float  # Place timepoint: value in dictionary
-    # print(dict_of_data)  # Debugging print statement
-
     return dict_of_data
-
-
-# # Debugging function
-# print(query_database_building('Nassau Hall'))  # Debugging print statement
 
 
 # Build query for database query of last 1 point for Total Steam Production from Princeton Total Campus Data
@@ -102,47 +77,25 @@ def influxdb_query_builder_campus_steam_pounds() :
     query_p3 = data_field_label_str
     query_p4 = '"'
     query_p5 = " WHERE time > now() - 12h ORDER BY time DESC LIMIT 1"
-
-    # Concatenate string
-    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)
-
-    # print(full_query_string)    # Debugging print statement
+    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)  # Concatenate string
     return full_query_string
-
-
-# # Debugging function
-# print(influxdb_query_builder_campus_steam_pounds())  # Debugging print statement
 
 
 # Function to query Total Campus Steam Production database and return a dictionary with query data
 def query_database_campus() :
     # Function to generate a list of queries to be made to the database and store list in variable "list_of_queries"
     total_campus_steam_query = influxdb_query_builder_campus_steam_pounds()
-    # print(total_campus_steam_query)    # Debugging print statement
-
     query_str = str(total_campus_steam_query)  # convert query to type string
     previous_entries = influxdb_client.query(query_str)  # Query last DB entry with same type of measurement name
     previous_points = previous_entries.get_points()  # Convert to points
-
     dict_of_data = { }  # Initialize dictionary
 
     for previous_point in previous_points :  # Iterate through points
-
         previous_timepoint_pd = pd.to_datetime(previous_point['time'])  # Convert Timestamp to pandas timestamp object
-        # print(previous_timepoint_pd)  # Debugging print statement
-
         previous_value = previous_point['value']  # retrieves value
         previous_value_float = float(previous_value)  # convert to type float
-        # print(previous_value_float)  # Debugging print statement
-
         dict_of_data[previous_timepoint_pd] = previous_value_float  # Place timepoint: value in dictionary
-    # print(dict_of_data)  # Debugging print statement
-
     return dict_of_data
-
-
-# # Debugging function
-# print(query_database_campus())  # Debugging print statement
 
 
 # Build query for database query of last 1 point for Princeton Total Campus Heat CO2 Data
@@ -154,47 +107,25 @@ def influxdb_query_builder_campus_heat_co2() :
     query_p3 = data_field_label_str
     query_p4 = '"'
     query_p5 = " WHERE time > now() - 12h ORDER BY time DESC LIMIT 1"
-
-    # Concatenate string
-    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)
-
-    # print(full_query_string)    # Debugging print statement
+    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)  # Concatenate string
     return full_query_string
-
-
-# # Debugging function
-# print(influxdb_query_builder_campus_heat_co2())  # Debugging print statement
 
 
 # Function to query Princeton Total Campus Heat CO2 Data from database and return a dictionary with query data
 def query_database_campus_heat_co2() :
     # Function to generate a list of queries to be made to the database and store list in variable "list_of_queries"
     building_heat_co2_query = influxdb_query_builder_campus_heat_co2()
-    # print(building_heat_co2_query)    # Debugging print statement
-
     query_str = str(building_heat_co2_query)  # convert query to type string
     previous_entries = influxdb_client.query(query_str)  # Query last DB entry with same type of measurement name
     previous_points = previous_entries.get_points()  # Convert to points
-
     dict_of_data = { }  # Initialize dictionary
 
     for previous_point in previous_points :  # Iterate through points
-
         previous_timepoint_pd = pd.to_datetime(previous_point['time'])  # Convert Timestamp to pandas timestamp object
-        # print(previous_timepoint_pd)  # Debugging print statement
-
         previous_value = previous_point['value']  # retrieves value
         previous_value_float = float(previous_value)  # convert to type float
-        # print(previous_value_float)  # Debugging print statement
-
         dict_of_data[previous_timepoint_pd] = previous_value_float  # Place timepoint: value in dictionary
-    # print(dict_of_data)  # Debugging print statement
-
     return dict_of_data
-
-
-# # Debugging function
-# print(query_database_campus_heat_co2())  # Debugging print statement
 
 
 # Function to calculate most recent tally of Heat CO2 for each Princeton's Campus Building and write data to InfluxDB
@@ -210,9 +141,6 @@ def write_recent_building_heat_co2_to_InfluxDB(PU_R25_NAME) :
         building_heat_time = key
         building_heat_value = float(value)
 
-    # print(building_heat_time)  # Debugging print statement
-    # print(building_heat_value)  # Debugging print statement
-
     # Adds time stamp to list_of_times for finding latest timestamp
     list_of_times.append(building_heat_time)
 
@@ -223,9 +151,6 @@ def write_recent_building_heat_co2_to_InfluxDB(PU_R25_NAME) :
     for key , value in total_campus_heat_dict.items() :
         total_campus_heat_time = key
         total_campus_heat_value = float(value)
-
-    # print(total_campus_heat_time)  # Debugging print statement
-    # print(total_campus_heat_value)  # Debugging print statement
 
     # Adds time stamp to list_of_times for finding latest timestamp
     list_of_times.append(total_campus_heat_time)
@@ -238,25 +163,17 @@ def write_recent_building_heat_co2_to_InfluxDB(PU_R25_NAME) :
         total_campus_heat_co2_time = key
         total_campus_heat_co2_value = float(value)
 
-    # print(total_campus_heat_co2_time)  # Debugging print statement
-    # print(total_campus_heat_co2_value)  # Debugging print statement
-
     # Adds time stamp to list_of_times for finding latest timestamp
     list_of_times.append(total_campus_heat_co2_time)
-
-    # print(list_of_times)  # Debugging print statement
 
     # Date times are comparable; so you can use max(datetimes_list) and min(datetimes_list)
     # Source: https://stackoverflow.com/questions/3922644/find-oldest-youngest-datetime-object-in-a-list
     latest_timestamp = max(list_of_times)
-    # print(latest_timestamp)  # Debugging print statement
 
     # Formula for Calculating building level Heat/Steam CO2
     # (Building Heat/Campus Total Steam Production) * Campus Heat CO2
     building_heat_co2 = float((building_heat_value / total_campus_heat_value) * total_campus_heat_co2_value)
     building_heat_co2 = round(building_heat_co2 , 3)
-
-    # print(building_heat_co2)  # Debugging print statement
 
     # Puts data in json body for writing to InfluxDB
     json_body = [
@@ -267,7 +184,6 @@ def write_recent_building_heat_co2_to_InfluxDB(PU_R25_NAME) :
                 'units' : 'Pounds CO2'
             } ,
             "time" : latest_timestamp ,
-            # "time" : "2020-09-30T17:00:00Z" ,
             'fields' : {
                 'value' : building_heat_co2 ,
             }
@@ -276,12 +192,7 @@ def write_recent_building_heat_co2_to_InfluxDB(PU_R25_NAME) :
 
     # Write data to InfluxDB
     influxdb_client_heat_CO2.write_points(json_body)
-    # print(building_name + " Energy CO2")  # Debugging print statement
-    # print(json_body) # Debugging print statement
 
-
-# Debugging function
-# print(write_recent_building_heat_co2_to_InfluxDB('Nassau Hall'))  # Debugging print statement
 
 # Initialize databases
 _init_influxdb_database()

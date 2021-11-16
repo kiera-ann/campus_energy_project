@@ -43,16 +43,8 @@ def influxdb_query_builder_energy_co2_lbs() :
     query_p3 = data_field_label_str
     query_p4 = '"'
     query_p5 = " WHERE time > now() - 12h ORDER BY time DESC LIMIT 1"
-
-    # Concatenate string
-    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)
-
-    # print(full_query_string)    # Debugging print statement
+    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)  # Concatenate string
     return full_query_string
-
-
-# Debugging function
-# print(influxdb_query_builder_energy_co2_lbs())  # Debugging print statement
 
 
 # Build query for database query of last 1 points for power from Princeton Energy Calculations: "PU Energy Data: Total"
@@ -64,16 +56,9 @@ def influxdb_query_builder_campus_energy_kWh() :
     query_p3 = data_field_label_str
     query_p4 = '"'
     query_p5 = " WHERE time > now() - 12h ORDER BY time DESC LIMIT 1"
-
-    # Concatenate string
-    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)
-
-    # print(full_query_string)    # Debugging print statement
+    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)  # Concatenate string
     return full_query_string
 
-
-# Debugging function
-# print(influxdb_query_builder_campus_energy_kWh())  # Debugging print statement
 
 # Function to query InfluxDb and return 2 dictionaries in a list
 def query_InfluxDB_data() :
@@ -87,31 +72,24 @@ def query_InfluxDB_data() :
     # 'PU CO2 Data: Energy' Query
     campus_energy_co2_query_str = influxdb_query_builder_energy_co2_lbs()
     campus_energy_co2_query_str = str(campus_energy_co2_query_str)  # Convert to type string
-    # print(campus_energy_co2_query_str)    # Debugging print statement
 
     # 'PU Energy Data: Total' Query
     campus_energy_used_query_str = influxdb_query_builder_campus_energy_kWh()
     campus_energy_used_query_str = str(campus_energy_used_query_str)  # Convert to type string
-    # print(campus_energy_used_query_str)    # Debugging print statement
 
     # Query 'PU CO2 Data: Energy' data
     previous_entries_co2 = influxdb_client_co2.query(campus_energy_co2_query_str)  # Query last DB entry with same type of measurement name
     previous_points_co2 = previous_entries_co2.get_points()  # Convert to points
     for previous_point_co2 in previous_points_co2 :  # Iterate through points
-
         previous_timepoint_co2_pd = pd.to_datetime(previous_point_co2['time'])  # Convert Timestamp to pandas timestamp object
-        # print(previous_timepoint_co2_pd)  # Debugging print statement
-
         previous_value_co2 = previous_point_co2['value']  # retrieves value
         previous_value_co2_float = float(previous_value_co2)  # convert to type float
-        # print(previous_value_co2_float) # Debugging print statement
 
     campus_energy_co2_dict[previous_timepoint_co2_pd] = previous_value_co2_float
     data_dict_co2 = {
         'PU CO2 Data: Energy lbs CO2' : campus_energy_co2_dict
     }
-    # print(campus_energy_co2_dict)   # Debugging print statement
-    # print(data_dict_co2)    # Debugging print statement
+
     list_of_data.append(data_dict_co2)
 
     # Query 'PU Energy Data: Total' data
@@ -120,31 +98,20 @@ def query_InfluxDB_data() :
     for previous_point_energy in previous_points_energy :  # Iterate through points
 
         previous_timepoint_energy_pd = pd.to_datetime(previous_point_energy['time'])  # Convert Timestamp to pandas timestamp object
-        # print(previous_timepoint_energy_pd)  # Debugging print statement
-
         previous_value_energy = previous_point_energy['value']  # retrieves value
         previous_value_energy_float = float(previous_value_energy)  # convert to type float
-        # print(previous_value_energy_float) # Debugging print statement
 
     campus_energy_dict[previous_timepoint_energy_pd] = previous_value_energy_float
     data_dict_energy = {
         'PU Energy Data: Total KWH' : campus_energy_dict
     }
-    # print(campus_energy_dict)   # Debugging print statement
-    # print(data_dict_energy)  # Debugging print statement
     list_of_data.append(data_dict_energy)
-
-    # print(list_of_data) # Debugging print statement
     return list_of_data
 
-
-# Debugging function
-# print(query_InfluxDB_data())    # Debugging print statement
 
 # Function to calculate the most recent energy emission data to InfluxDB
 def write_recent_energy_emission_rate_to_InfluxDB() :
     list_of_data = []  # Initialize list
-
     list_of_times = []  # Initialize list of timestamps
     list_of_values = []  # Initialize list of values
 
@@ -153,42 +120,25 @@ def write_recent_energy_emission_rate_to_InfluxDB() :
 
     # Gets data from Function 'query_InfluxDB_data()'
     list_of_data = query_InfluxDB_data()
-    # print(list_of_data)
 
     for dictionary in list_of_data :
         # Iterate through dictionary of timestamp and values and append time and value in list_of_time and list_of_values
         for key , value in dictionary.items() :
-            # print(key)  # Debugging print statement
-            # print(value)    # Debugging print statement
-
             for timestamp , data_value in value.items() :
-                # print(timestamp)    # Debugging print statement
                 list_of_times.append(timestamp)
-                # print(data_value)   # Debugging print statement
                 data_dict[key] = data_value
-
-    # print(data_dict)    # Debugging print statement
-    # print(list_of_times)    # Debugging print statement
 
     # Date times are comparable; so you can use max(datetimes_list) and min(datetimes_list)
     # Source: https://stackoverflow.com/questions/3922644/find-oldest-youngest-datetime-object-in-a-list
     # I will use the latest timestamp as the overall timestamp to apply to the data to be input into InfluxDB
     latest_timestamp = max(list_of_times)
-    # print(latest_timestamp)   # Debugging print statement
-
-    # Extract CO2 value
-    co2_emissions_lbs = data_dict['PU CO2 Data: Energy lbs CO2']
-    # print(co2_emissions_lbs)  # Debugging print statement
-    # Extract Energy value
-    energy_value_kwh = data_dict['PU Energy Data: Total KWH']
-    # print(energy_value_kwh)  # Debugging print statement
+    co2_emissions_lbs = data_dict['PU CO2 Data: Energy lbs CO2']  # Extract CO2 value
+    energy_value_kwh = data_dict['PU Energy Data: Total KWH']  # Extract Energy value
 
     # Formula to calculate energy emission rate
     # CO2 Emission (unit pounds) / Energy (unit KWH)
     energy_emission_rate_value = co2_emissions_lbs / energy_value_kwh
-    # print(energy_emission_rate_value)       # Debugging print statement
-    energy_emission_rate_value = round(float(energy_emission_rate_value), 8)
-    # print(energy_emission_rate_value)  # Debugging print statement
+    energy_emission_rate_value = round(float(energy_emission_rate_value) , 8)
 
     # Puts data in json body for writing to InfluxDB
     json_body = [
@@ -207,12 +157,7 @@ def write_recent_energy_emission_rate_to_InfluxDB() :
 
     # Write data to InfluxDB
     influxdb_client.write_points(json_body)
-    # print("PU Energy Emission Rate")  # Debugging print statement
-    # print(json_body) # Debugging print statement
 
-
-# Debugging function
-# print(write_recent_energy_emission_rate_to_InfluxDB())  # Debugging print statement
 
 # Initialize databases
 _init_influxdb_database()

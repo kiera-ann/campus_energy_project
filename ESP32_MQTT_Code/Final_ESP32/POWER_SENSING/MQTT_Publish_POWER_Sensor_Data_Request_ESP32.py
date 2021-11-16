@@ -46,8 +46,7 @@ def mqtt_esp32_power_request() :
 
         # Handles KeyboardInterrupt exception
         except KeyboardInterrupt :
-            # quit
-            sys.exit()
+            sys.exit()  # quit
 
         # Handles other issues
         except :

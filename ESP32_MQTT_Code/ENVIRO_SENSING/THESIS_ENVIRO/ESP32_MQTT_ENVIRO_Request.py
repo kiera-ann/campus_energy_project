@@ -35,28 +35,20 @@ client.on_publish = on_publish
 def mqtt_enviro_request_data() :
     while True :
         try :
-            # Message for data request
-            msg = "sensor_data_requested"
+            msg = "sensor_data_requested"  # Message for data request
             ret = client.publish(MQTT_ESP32_ENVIRONMENT_SENSORS_REQUEST_TOPIC , msg)
             print(msg)
-
-            # Delay for 40 seconds
-            time.sleep(40)
-
+            time.sleep(40)  # Delay for 40 seconds
             print()
 
         # Handles KeyboardInterrupt exception
         except KeyboardInterrupt :
-            # quit
-            sys.exit()
+            sys.exit()  # quit
 
         # Handles other exceptions
         except :
-            # Delay for 10 seconds
-            time.sleep(10)
-
-            # Try again
-            continue
+            time.sleep(10)  # Delay for 10 seconds
+            continue  # Try again
 
 
 # Main Function

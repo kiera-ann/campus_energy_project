@@ -69,13 +69,8 @@ def influxdb_query_builder(data_field_label) :
 
     # Concatenate string
     full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)
-
-    # print(full_query_string)    # Debugging print statement
     return full_query_string
 
-
-# Debugging function
-# print(influxdb_query_builder("EP.Totals.Power.i.Site_kW"))    # Debugging print statement
 
 # Function to ensure that the percent value returned from the grid is not more than 100% or less than 0%
 def value_percent_checker(value) :
@@ -96,14 +91,11 @@ def campus_energy_source_division(list_of_data) :
     energy_sources_for_campus = []
 
     icetec_list_data = list_of_data
-    # print(icetec_list_data)   # Debugging print statement
 
     # Loop through elements in list_of_data received from Icetec API call
     for i in range(0 , len(list_of_data)) :
         if list_of_data[i]["data_field_label"] in data_field_labels_of_interest :
             energy_sources_for_campus.append(list_of_data[i])
-
-    # print(energy_sources_for_campus)  # Debugging print statement
 
     # For loop to loop through energy sources for the campus and extract kW value for each of the 5 campus energy sources
     for i in range(0 , len(energy_sources_for_campus)) :
@@ -132,8 +124,6 @@ def campus_energy_source_division(list_of_data) :
         elif energy_sources_for_campus[i]["data_field_label"] == "EP.Totals.Power.i.MicroTurb_kW" :
             total_micro_turbine_power_kW = energy_sources_for_campus[i]['value']
             total_micro_turbine_power_timestamp = energy_sources_for_campus[i]['timestamp']
-
-    # print(total_power_of_campus_kW)  # Debugging print statement
 
     # PJM Grid Percent
     grid_power_percent = round((float(total_grid_power_kW / total_power_of_campus_kW) * 100) , 2)
@@ -185,8 +175,6 @@ def campus_energy_source_division(list_of_data) :
     for i in range(0 , len(list_to_write_influxDB)) :
         campus_data_to_influxdb(list_to_write_influxDB[i])
 
-    # print(list_to_write_influxDB)  # Debugging print statement
-
     # Separates the prints of "Division of Campus Energy Sources" from Icetec Parse Prints
     print()
 
@@ -212,8 +200,6 @@ def campus_data_to_influxdb(json_body) :
 
         for previous_point in previous_points :  # Iterate through points
             previous_timepoint = previous_point['time']  # sets the variable "previous_timepoint" to whatever the last timepoint value is
-            # print(previous_timepoint)    # Debugging print statement
-            # print(type(previous_point))  # Seems to be dictionary type
             previous_timepoint_str = str(previous_timepoint)  # Convert timepoint value to type string
 
         # Pass if previous_point_str == latest_timepoint_str evaluates to True
@@ -235,4 +221,3 @@ def campus_data_to_influxdb(json_body) :
 
 # Initialize database
 _init_influxdb_database()
-

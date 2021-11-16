@@ -1,5 +1,3 @@
-# Use this to test MQTTInfluxDBBridge.py
-
 import paho.mqtt.client as mqtt
 import pandas as pd
 import sys
@@ -116,7 +114,6 @@ def dorm_room_energy_InfluxDB(json_body) :
     data_set = json_body[0]
     data_set.items()
     measurement_name = str(data_set["measurement"])
-    # print(measurement_name)
 
     # Function to request energy calculations
     write_DR_energy_to_InfluxDB(measurement_name)
@@ -129,7 +126,6 @@ def on_message(client , userdata , msg) :
     """The callback for when a PUBLISH message is received from the server."""
     try :
         message_payload_to_JSON(msg)
-        # client.disconnect()
     except :
         pass
 
@@ -160,8 +156,7 @@ def main() :
 
         # Handles KeyboardInterrupt exception
         except KeyboardInterrupt :
-            # quit
-            sys.exit()
+            sys.exit()  # quit
 
         # Handles other issues
         except :

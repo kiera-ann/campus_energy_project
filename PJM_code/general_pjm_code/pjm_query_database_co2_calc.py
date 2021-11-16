@@ -1,4 +1,3 @@
-#
 ''' Function to calculate metric tons of CO2 Princeton University contributed from the PJM/PSEG grid. Writes to InfluxDB. '''
 from influxdb import InfluxDBClient
 import pandas as pd
@@ -45,54 +44,31 @@ def influxdb_query_builder_energy_last_calculated() :
     query_p3 = data_field_label_str
     query_p4 = '"'
     query_p5 = " WHERE time > now() - 2d ORDER BY time DESC LIMIT 1"
-
-    # Concatenate string
-    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)
-
-    # print(full_query_string)    # Debugging print statement
+    full_query_string = str(query_p1 + query_p2 + query_p3 + query_p4 + query_p5)  # Concatenate string
     return full_query_string
 
-
-# Debugging function
-# print(influxdb_query_builder_energy_last_calculated ()) # Debugging print statement
 
 # Function to query last 1 energy value used by campus and supplied from PJM/PSEG
 def query_last_energy_value_import_InfluxDB() :
     # Generate Queries for Energy Import data; only last 1 point will be used
     energy_import_query = influxdb_query_builder_energy_last_calculated()
-    # print(energy_import_query)   # Debugging print statement
-
     query_str = str(energy_import_query)  # convert query to type string
     previous_entries = influxdb_client.query(query_str)  # Query last DB entry with same type of measurement name
     previous_points = previous_entries.get_points()  # Convert to points
-
     dict_of_data = { }  # Initialize dictionary
 
     for previous_point in previous_points :  # Iterate through points
-
         previous_timepoint_pd = pd.to_datetime(previous_point['time'])  # Convert Timestamp to pandas timestamp object
-        # print(previous_timepoint_pd)  # Debugging print statement
-
         previous_value = previous_point['value']  # retrieves value
         previous_value_float = float(previous_value)  # convert to type float
-        # print(previous_value_float)  # Debugging print statement
-
         dict_of_data[previous_timepoint_pd] = previous_value_float  # Place timepoint: value in dictionary
-    # print(dict_of_data)  # Debugging print statement
     return dict_of_data
-
-
-# Debugging function
-# print(query_last_2_values_power_import_InfluxDB()) # Debugging print statement
 
 
 # Function to calculate pounds of CO2 Princeton University contributed to from the PJM/PSEG grid
 def write_campus_grid_co2_to_influxDB() :
     dict_of_data_dt_kWh = { }  # Initialize dictionary
-
     dict_of_data_dt_kWh = query_last_energy_value_import_InfluxDB()  # Returns a dictionary of timestamp and kWh value calculated
-    # print(dict_of_data_dt_kWh)  # Debugging print statement
-
     list_of_times = []  # Initialize list of timestamps
     list_of_values = []  # Initialize list of values
 
@@ -101,21 +77,14 @@ def write_campus_grid_co2_to_influxDB() :
         list_of_times.append(key)
         list_of_values.append(value)
 
-    # print(list_of_times)   # Debugging print statement
-    # print(list_of_values)   # Debugging print statement
-
     # Gets the time values
     last_timepoint = list_of_times[0]
 
     # Gets the last KWh calculated
     last_value_kWh = list_of_values[0]
 
-    # print("Below is from Function: calculate_pu_co2_grid")  # Line for debugging
-
     # kWh from Princeton grid use
     pu_grid_KWh_icetec = last_value_kWh
-
-    # print(pu_grid_KWh_icetec)          # Debugging print statement
 
     # Query database for latest value of Metric tons CO2 and total MW from PJM Grid
     results = influxdb_client.query(query)
@@ -129,13 +98,9 @@ def write_campus_grid_co2_to_influxDB() :
         grid_total_mwh = round(float(point['total_mw']) , 5)  # float 5 decimal values
         grid_total_kWh = 1000 * grid_total_mwh  # conversion to kilowatts units since University reports in kilowatts while grid is in megawatts
 
-    # print(grid_total_kWh)          # Debugging print statement
-    # print(grid_total_co2_metric_tons)       # Debugging print statement
-
     # Formula is (pu_grid_KWh_icetec / grid_total_kWh) * grid_total_co2_metric_tons = total_co2_metric_tons from grid for campus
     campus_metric_tons_co2_grid = ((pu_grid_KWh_icetec / grid_total_kWh) * grid_total_co2_metric_tons)
     campus_metric_tons_co2_grid = round((campus_metric_tons_co2_grid) , 5)
-    # print(campus_metric_tons_co2_grid)   # Debugging print statement
 
     # For conversion to pounds CO2 from metric tons CO2
     campus_pounds_co2_grid = campus_metric_tons_co2_grid * 2204.62
@@ -156,15 +121,8 @@ def write_campus_grid_co2_to_influxDB() :
         }
     ]
 
-    # Write to InfluxDB
-    influxdb_client_PU_CO2.write_points(json_body)
+    influxdb_client_PU_CO2.write_points(json_body)  # Write to InfluxDB
 
-    # print("PU Grid CO2")   # Debugging print statement
-    # print(json_body)      # Debugging print statement
-    # print()      # Debugging print statement
-
-# Debugging function
-# print(write_campus_grid_co2_to_influxDB())   # Debugging print statement
 
 # Function to initialize database
 def _init_influxdb_database() :
@@ -174,5 +132,4 @@ def _init_influxdb_database() :
     influxdb_client.switch_database(INFLUXDB_DATABASE)  # we’ll set the client to use this database
 
 
-# Initialize database
-_init_influxdb_database()
+_init_influxdb_database()  # Initialize database
