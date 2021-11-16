@@ -161,7 +161,7 @@ def write_recent_dr_energy_co2_to_InfluxDB(measurement_name) :
     # Total Campus Energy CO2 Data
     total_campus_energy_co2_dict = query_database_campus_energy_co2()  # returns a dictionary with query data
 
-    # For loop to get timestamp and values and append time and value in list_of_time and list_of_values
+    # For loop to get timestamp and values and append time and value in total_campus_energy_co2_time and total_campus_energy_co2_value
     for key , value in total_campus_energy_co2_dict.items() :
         total_campus_energy_co2_time = key
         total_campus_energy_co2_value = float(value)
