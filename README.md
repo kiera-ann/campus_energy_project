@@ -19,6 +19,12 @@ react_frontend – React JS Frontend to touchscreen kiosk (co-written with anoth
 arduino_MCU_code – Arduino code ran on the microcontrollers to connect to University WiFi network and publish sensor data
 when sensor data is requested from server hosted in dorm running code in "ESP32_MQTT_Code"
 
+Project_images - Contains images taken during development of hardware and software for project. Sub-folders include
+i) Hardware – IoT devices
+ii) Project Background – General Campus Energy Introduction
+iii) System Design – Top level view of interconnections between hardware and software
+iv) User Interface - Annotated UI shown on Raspberry Pi Screen Kiosk
+
 ## Docker
 
 A number of Docker programs were run for this project
