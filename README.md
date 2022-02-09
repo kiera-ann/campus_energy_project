@@ -31,7 +31,7 @@ ii) Project Background – General Campus Energy Introduction
 
 iii) System Design – Top level view of interconnections between hardware and software
 
-![Overview System Design data flow](https://github.com/kiera-ann/campus_energy_project/blob/master/Project_images/readme%20Images/Overview%20System%20Design%20data%20flow.pngg)
+![Overview System Design data flow](https://github.com/kiera-ann/campus_energy_project/blob/master/Project_images/readme%20Images/Overview%20System%20Design%20data%20flow.png)
 
 iv) User Interface - Annotated UI shown on Raspberry Pi Screen Kiosk
 
