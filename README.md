@@ -44,6 +44,10 @@ iv) User Interface - Annotated UI shown on Raspberry Pi Screen Kiosk
 Annotation of User Interface
 ![UI annotated](https://github.com/kiera-ann/campus_energy_project/blob/master/Project_images/readme%20Images/UI%20annotated.png)
 
+Project Presentation - PDF Presentation of Project
+
+[Project Presentatio](docs/CONTRIBUTING.md)
+
 ## Docker
 
 A number of Docker programs were run for this project
