@@ -21,7 +21,7 @@ when sensor data is requested from server hosted in dorm running code in "ESP32_
 
 Project_images - Contains images taken during development of hardware and software for project. Sub-folders include
 i) Hardware – IoT devices
-<img width=“964” alt=“enviro sensor” src=“Project_images/Hardware/Enviro Sensor Enclosure annotated.tiff”>
+<img width=“964” alt=“enviro sensor” src=“https://github.com/kiera-ann/campus_energy_project/blob/master/Project_images/Hardware/Enviro%20Sensor%20Enclosure%20annotated.tiff”>
 
 ii) Project Background – General Campus Energy Introduction
 iii) System Design – Top level view of interconnections between hardware and software
