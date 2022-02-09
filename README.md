@@ -21,7 +21,7 @@ when sensor data is requested from server hosted in dorm running code in "ESP32_
 
 Project_images - Contains images taken during development of hardware and software for project. Sub-folders include
 i) Hardware – IoT devices
-![Power Sensor Enclosure Annotated](Project_images/readme Images/Power Sensor Enclosure Annotated.png)
+![Power Sensor Enclosure Annotated](https://github.com/kiera-ann/campus_energy_project/blob/master/Project_images/readme%20Images/Power%20Sensor%20Enclosure%20Annotated.png)
 
 ![Power Sensor Enclosure Annotated](Project_images/readme Images/Power Sensor Enclosure Annotated.png)
 
