@@ -46,7 +46,7 @@ Annotation of User Interface
 
 Project Presentation - PDF Presentation of Project
 
-[Project Presentatio](docs/CONTRIBUTING.md)
+[Project Presentatio](https://github.com/kiera-ann/campus_energy_project/blob/master/Project%20Presentation/Robinson_Kiera%20Senior%20Thesis%20Presentation%2011_08_2021%20(optimized).pdf)
 
 ## Docker
 
