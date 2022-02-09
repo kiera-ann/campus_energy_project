@@ -21,12 +21,22 @@ when sensor data is requested from server hosted in dorm running code in "ESP32_
 
 Project_images - Contains images taken during development of hardware and software for project. Sub-folders include
 i) Hardware – IoT devices
-![Environmental Sensor](https://github.com/kiera-ann/campus_energy_project/blob/master/Project_images/Hardware/Enviro%20Sensor%20Enclosure%20annotated.tiff)
+![![Power Sensor Enclosure Annotated](Project_images/readme Images/Power Sensor Enclosure Annotated.png)
+](Project_images/readme Images/Enviro Sensor Enclosure annotated.png)
 
+![Power Sensor Enclosure Annotated](Project_images/readme Images/Power Sensor Enclosure Annotated.png)
 
 ii) Project Background – General Campus Energy Introduction
+
+![PU 7 day Power Composition timeseries graph](Project_images/readme Images/PU 7 day Power Composition timeseries graph.png)
+
 iii) System Design – Top level view of interconnections between hardware and software
+
+![Overview System Design data flow](Project_images/readme Images/Overview System Design data flow.png)
+
 iv) User Interface - Annotated UI shown on Raspberry Pi Screen Kiosk
+
+![UI annotated](Project_images/readme Images/UI annotated.png)
 
 ## Docker
 
