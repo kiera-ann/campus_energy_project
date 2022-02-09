@@ -21,12 +21,8 @@ when sensor data is requested from server hosted in dorm running code in "ESP32_
 
 Project_images - Contains images taken during development of hardware and software for project. Sub-folders include
 i) Hardware – IoT devices
-
-Power Sensor Enclosure Annotated.tiff
 ii) Project Background – General Campus Energy Introduction
-
 iii) System Design – Top level view of interconnections between hardware and software
-
 iv) User Interface - Annotated UI shown on Raspberry Pi Screen Kiosk
 
 ## Docker
