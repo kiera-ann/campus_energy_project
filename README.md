@@ -20,21 +20,28 @@ arduino_MCU_code – Arduino code ran on the microcontrollers to connect to Univ
 when sensor data is requested from server hosted in dorm running code in "ESP32_MQTT_Code"
 
 Project_images - Contains images taken during development of hardware and software for project. Sub-folders include
+
 i) Hardware – IoT devices
+
+Power Sensor Enclosure Annotated
 ![Power Sensor Enclosure Annotated](https://github.com/kiera-ann/campus_energy_project/blob/master/Project_images/readme%20Images/Power%20Sensor%20Enclosure%20Annotated.png)
 
+Environmental Sensor Enclosure Annotated
 ![Environmental Sensor Enclosure Annotated](https://github.com/kiera-ann/campus_energy_project/blob/master/Project_images/readme%20Images/Enviro%20Sensor%20Enclosure%20annotated.png)
 
 ii) Project Background – General Campus Energy Introduction
 
+7 Day Timeseries Grafana Snapshot of Power Composition of Princeton University
 ![PU 7 day Power Composition timeseries graph](https://github.com/kiera-ann/campus_energy_project/blob/master/Project_images/readme%20Images/PU%207%20day%20Power%20Composition%20timeseries%20graph.png)
 
 iii) System Design – Top level view of interconnections between hardware and software
 
+Overview of System Design and Technologies used
 ![Overview System Design data flow](https://github.com/kiera-ann/campus_energy_project/blob/master/Project_images/readme%20Images/Overview%20System%20Design%20data%20flow.png)
 
 iv) User Interface - Annotated UI shown on Raspberry Pi Screen Kiosk
 
+Annotation of User Interface
 ![UI annotated](https://github.com/kiera-ann/campus_energy_project/blob/master/Project_images/readme%20Images/UI%20annotated.png)
 
 ## Docker
