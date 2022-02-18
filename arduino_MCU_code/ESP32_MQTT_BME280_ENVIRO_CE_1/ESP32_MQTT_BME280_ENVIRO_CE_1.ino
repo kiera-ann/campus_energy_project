@@ -6,7 +6,7 @@
 // 2020.12.26 : Added reconnection functions for both WiFi and MQTT; Added OTA Function; Rearranged connection to WiFi since it is needed regardless
 //              of connection to sensor
 // 2021.01.28 : Made code revisions in an attempt to address ESP32 lack of response with time.
-// 2021.04.24 : Made code revisions to change MQTT broker adrress to be 2018 Mac Mini i3 Server; Also removed some code for final release in production test
+// 2021.04.24 : Made code revisions to change MQTT broker address to be 2018 Mac Mini i3 Server; Also removed some code for final release in production test
 
 // For JSON data encoding when publishing payload
 #include <ArduinoJson.h>
