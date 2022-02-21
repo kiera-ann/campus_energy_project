@@ -76,7 +76,7 @@ After, the kiosk mode was set up entering the following command in Terminal.
 
 Then, the following block of text was written and saved to the “autostart” file:
 
-### `@xset s noblank @xset s off @xset -dpms @lxpanel --profile LXDE-pi @pcmanfm --desktop --profile LXDE-pi @xscreensaver -no-splash /usr/bin/chromium-browser --kiosk --disable-restore-session-state http://140.180.133.174:5000/$$`
+### `@xset s noblank @xset s off @xset -dpms @lxpanel --profile LXDE-pi @pcmanfm --desktop --profile LXDE-pi @xscreensaver -no-splash /usr/bin/chromium-browser --kiosk --disable-restore-session-state http://xxx.xxx.xxx.xxx:5000/$$`
 
 where $$ is specific to the user account. For example, $$ could be "a5" which represents “aware user number 5”.
 
